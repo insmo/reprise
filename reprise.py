@@ -133,7 +133,7 @@ def generate_atom(entries, feed_url):
 
 def write_file(file_name, contents):
     with open(file_name, 'w') as open_file:
-        open_file.write(contents)
+        open_file.write(contents.encode("utf-8"))
 
 def slugify(str):
     return re.sub(r'\s+', '-', re.sub(r'[^\w\s-]', '',
