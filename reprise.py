@@ -4,11 +4,13 @@ from __future__ import with_statement
 
 import os
 import re
+import sys
 import time
 import email
 import shutil
 import markdown
 
+from docutils import core
 from textwrap import dedent
 from lxml.etree import tostring
 from smartypants import smartyPants
@@ -17,7 +19,7 @@ from datetime import datetime, timedelta
 from jinja2 import DictLoader, Environment
 from pygments.formatters import HtmlFormatter
 from os.path import abspath, realpath, dirname, join
-
+from optparse import OptionParser, make_option, OptionValueError, check_choice
 
 TITLE = 'Journal'
 URL = 'http://journal.uggedal.com'
@@ -50,10 +52,24 @@ CONTEXT = {
     'stylesheet': STYLESHEET,
 }
 
-def _markdown(content):
+def handle_args():
+    usage = "usage: %prog [options]"
+    option_list = [
+        make_option('-m', '--markup',
+            choices=('reST', 'Markdown'),
+            default='Markdown',
+            help='Choices are `reST` and `Markdown`(default).',),
+    ]
+    parser = OptionParser(option_list=option_list, usage=usage)
+    return parser.parse_args()
+    
+def _markup(content, options):
+    if options.markup.lower() == 'rest':
+        parts = core.publish_parts(source=content, writer_name='html')
+        return parts['body_pre_docinfo']+parts['fragment']
     return markdown.markdown(content, ['codehilite', 'def_list'])
 
-def read_and_parse_entries():
+def read_and_parse_entries(options):
     files = sorted([join(DIRS['source'], f)
                     for f in os.listdir(DIRS['source'])], reverse=True)
     entries = []
@@ -61,8 +77,8 @@ def read_and_parse_entries():
         match = META_REGEX.findall(file)
         if len(match):
             meta = match[0]
-            with open(file, 'r') as open_file:
-                msg = email.message_from_file(open_file)
+            with open(file, 'r') as fp:
+                msg = email.message_from_file(fp)
                 date = datetime(*[int(d) for d in meta[0:3]])
                 entries.append({
                     'slug': slugify(meta[3]),
@@ -71,7 +87,7 @@ def read_and_parse_entries():
                     'date': {'iso8601': date.isoformat(),
                              'rfc3339': rfc3339(date),
                              'display': date.strftime('%Y-%m-%d'),},
-                    'content_html': smartyPants(_markdown(msg.get_payload())),
+                    'content_html': smartyPants(_markup(msg.get_payload(), options)),
                 })
     return entries
 
@@ -133,14 +149,12 @@ def generate_atom(entries, feed_url):
                            *entry_elements), pretty_print=True)
 
 def write_file(file_name, contents):
-    with open(file_name, 'w') as open_file:
-        open_file.write(contents.encode("utf-8"))
+    with open(file_name, 'w') as fp:
+        fp.write(contents.encode("utf-8"))
 
 def read_file(file_name):
     with open(file_name, 'r') as fp:
-        contents = fp.read()
-    return contents
-    
+        return fp.read()
 
 def slugify(str):
     return re.sub(r'\s+', '-', re.sub(r'[^\w\s-]', '',
@@ -178,7 +192,8 @@ META_REGEX = re.compile(r"/(\d{4})\.(\d\d)\.(\d\d)\.(.+)")
 if __name__ == "__main__":
     templates = get_templates()
     env = Environment(loader=DictLoader(templates))
-    all_entries = read_and_parse_entries()
+    options, args = handle_args()
+    all_entries = read_and_parse_entries(options)
     shutil.copytree(DIRS['assets'], DIRS['build'])
     generate_index(all_entries, env.get_template('list.html'))
     os.mkdir(join(DIRS['build'], 'tags'))
