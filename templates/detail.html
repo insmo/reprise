@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}
+  <a href="/">{{ body_title }}</a>
+{% endblock %}
+{% block content %}
+  {% set display_content = True %}
+  {% set plain_title = True %}
+  {% include '_entry.html' %}
+{% endblock %}

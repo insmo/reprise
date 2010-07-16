@@ -7,21 +7,21 @@ import re
 import time
 import email
 import shutil
-
 import markdown
 
-from os.path import abspath, realpath, dirname, join
-from datetime import datetime, timedelta
 from textwrap import dedent
-from pygments.formatters import HtmlFormatter
-from smartypants import smartyPants
-from jinja2 import DictLoader, Environment
-from lxml.builder import ElementMaker
 from lxml.etree import tostring
+from smartypants import smartyPants
+from lxml.builder import ElementMaker
+from datetime import datetime, timedelta
+from jinja2 import DictLoader, Environment
+from pygments.formatters import HtmlFormatter
+from os.path import abspath, realpath, dirname, join
+
 
 TITLE = 'Journal'
 URL = 'http://journal.uggedal.com'
-STYLESHEET = 'style2.css'
+STYLESHEET = 'style.css'
 
 AUTHOR = {
     'name': 'Eivind Uggedal',
@@ -39,6 +39,7 @@ DIRS = {
     'build': join(ROOT, 'build'),
     'public': join(ROOT, 'public'),
     'assets': join(ROOT, 'assets'),
+    'templates': join(ROOT, 'templates'),
 }
 
 CONTEXT = {
@@ -135,6 +136,12 @@ def write_file(file_name, contents):
     with open(file_name, 'w') as open_file:
         open_file.write(contents.encode("utf-8"))
 
+def read_file(file_name):
+    with open(file_name, 'r') as fp:
+        contents = fp.read()
+    return contents
+    
+
 def slugify(str):
     return re.sub(r'\s+', '-', re.sub(r'[^\w\s-]', '',
                                       str.replace('.', ' ').lower()))
@@ -152,307 +159,19 @@ def rfc3339(date):
     return (date + timedelta(seconds=offset)).strftime('%Y-%m-%dT%H:%M:%SZ')
 
 def get_templates():
-    templates = {
-    'base.html': """
-    <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
-    "http://www.w3.org/TR/html4/strict.dtd">
-    <html>
-      <head>
-        <title>{{ head_title }}</title>
-        <link rel='stylesheet' type='text/css' href='/{{ stylesheet }}'>
-        <link rel="alternate" type="application/atom+xml"
-              title="{{ head_title }}" href="{{ feed_url }}">
-      </head>
-      <body>
-        <h1>
-          {% block title %}
-          {% endblock %}
-        </h1>
-        {% block content %}
-        {% endblock %}
-        <p id="elsewhere">
-        {% for service, url in author.elsewhere.items() %}
-          <a href="{{ url }}">{{ service }}</a>
-        {% endfor %}
-        </p>
-        <p id="footer">
-          <span class="author vcard">
-            Written by
-            <a class="url fn" href="{{ author.url }}">{{ author.name }}</a>
-            &lt;<a class="email" href="mailto:{{ author.email }}">{{ author.email }}</a>&gt;.
-          </span>
-          Powered by
-          <a href="http://github.com/uggedal/reprise">reprise.py</a>.
-        </p>
-      </body>
-      <script type='text/javascript'>
-        var gaJsHost = (("https:" == document.location.protocol) ?
-                       "https://ssl." : "http://www.");
-        document.write(unescape("%3Cscript src='" + gaJsHost +
-                                "google-analytics.com/ga.js' type='text/" +
-                                "javascript'%3E%3C/script%3E"));
-      </script>
-      <script type='text/javascript'>
-        var pageTracker = _gat._getTracker("{{ analytics }}");
-        pageTracker._initData();
-        pageTracker._trackPageview();
-      </script>
-    </html>
-    """,
-
-    'list.html': """
-    {% extends "base.html" %}
-    {% block title %}
-      {% if active_tag %}
-        <a href="/">{{ body_title }}</a>
-      {% else %}
-        {{ body_title }}
-      {% endif %}
-    {% endblock %}
-    {% block content %}
-      {% for entry in entries %}
-        {% set display_content = loop.first %}
-        {% include '_entry.html' %}
-      {% endfor %}
-    {% endblock %}
-    """,
-
-    'detail.html': """
-    {% extends "base.html" %}
-    {% block title %}
-      <a href="/">{{ body_title }}</a>
-    {% endblock %}
-    {% block content %}
-      {% set display_content = True %}
-      {% set plain_title = True %}
-      {% include '_entry.html' %}
-    {% endblock %}
-    """,
-
-    '_entry.html': """
-    <div class="hentry">
-      <abbr class="updated" title="{{ entry.date.iso8601 }}">
-        {{ entry.date.display }}
-      </abbr>
-      <h2>
-        {% if plain_title %}
-          {{ entry.title }}
-        {% else %}
-          <a href="/{{ entry.slug }}" rel="bookmark">{{ entry.title }}</a>
-        {% endif %}
-      </h2>
-      {% if display_content %}
-        <ul class="tags">
-          {% for tag in entry.tags %}
-            <li{% if active_tag == tag %} class="active"{% endif %}>
-              <a href="/tags/{{ tag }}" rel="tag" >{{ tag }}</a>
-            </li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-      {% if display_content %}
-        <div class="entry-content">{{ entry.content_html }}</div>
-      {% endif %}
-    </div>
-    """,
-
-    '404.html': """
-    {% extends "base.html" %}
-    {% block title %}
-      <a href="/">{{ body_title }}</a>
-    {% endblock %}
-    {% block content %}
-      <p>Resource not found. Go back to <a href="/">the front</a> page.</p>
-    {% endblock %}
-    """,
-
-    STYLESHEET: """
-    body {
-      color: #444;
-      font-size: 1em;
-      font-family: 'DejaVu Sans', 'Bitstream Vera Sans', Verdana, sans-serif;
-      line-height: 1.6;
-      padding: 0 3em 0 13em;
-      width: 40em;
-    }
-
-    @font-face {
-      font-family: "Sorts Mill Goudy";
-      src: url("/OFLGoudyStM.otf");
-    }
-
-    a {
-      color: #444;
-    }
-
-    p {
-      margin-bottom: 1em;
-    }
-
-    ul, ol {
-      padding: 0;
-    }
-
-    blockquote {
-      font-style: italic;
-      margin: 0;
-    }
-
-      blockquote em {
-        font-weight: bold;
-      }
-
-    pre, code {
-      font-family: 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono',
-                   Consolas, Monaco, 'Lucida Console', monospaced;
-      font-size: .75em;
-    }
-
-      pre {
-        border: 0.15em solid #eee;
-        border-left: 1em solid #eee;
-        display: block;
-        padding: 1em 1em 1em 2em;
-      }
-
-    h1 {
-      font-size: 2.5em;
-      margin: 1.5em 0 1em 0;
-    }
-
-    h2 {
-      font-size: 3em;
-    }
-
-    h3 {
-      font-size: 2em;
-    }
-
-    img {
-      margin: 1em 0 1em 0;
-    }
-
-    table {
-      margin-top: 1em;
-    }
-
-      table th, table td {
-        padding-right: 1em;
-        text-align: left;
-      }
-
-      table.hanging {
-        display: inline;
-        float: left;
-        padding: 0;
-        margin: 1em 1em 1em -10em;
-      }
-
-        table caption {
-          caption-side: bottom;
-          color: #666;
-          font-size: .75em;
-          padding: 0 1em;
-          text-align: left;
-        }
-
-          table.hanging img {
-            border: .1em solid #ddd;
-            margin: 0;
-            padding: .5em;
-          }
-
-    h1 a, h2 a, h3 a, ul.tags a {
-      text-decoration: none;
-    }
-
-    h1, h1 a, h2, h2 a, h3 {
-      color: #222;
-    }
-
-      h1 a:hover, h2 a:hover {
-        color: #c00;
-      }
-
-    h1, h2, h3, abbr.updated {
-      font-family: "Sorts Mill Goudy", Georgia, 'DejaVu Serif', 'Bitstream Vera Serif', serif;
-      font-style: normal;
-      font-weight: normal;
-    }
-
-    abbr.updated, ul.tags {
-      float: left;
-    }
-
-      abbr.updated {
-        border: 0;
-        color: #c00;
-        font-size: 1.6em;
-        line-height: 3.25em;
-        margin: 0 0 0 -6.25em;
-      }
-
-    ul.tags {
-      list-style-type: none;
-      margin: 0 0 0 -10em;
-    }
-
-      ul.tags li {
-        display: block;
-        font-size: .8em;
-        margin-bottom: .3em;
-      }
-
-        ul.tags li.active a, ul.tags a:hover {
-          color: #c00;
-        }
-
-    .entry-content a {
-      color: #c00;
-    }
-
-    .entry-content a:hover {
-      color: #000;
-    }
-
-    p#footer {
-      color: #bbb;
-      font-size: .75em;
-      margin-top: 3em;
-      text-align: center;
-      text-indent: 0;
-    }
-
-    p#footer a {
-      color: #999;
-    }
-
-    #elsewhere {
-      margin: 1em;
-      position: absolute;
-      right: 1em;
-      top: .5em;
-      z-index: 9000;
-    }
-
-    #elsewhere a {
-      background: #c00;
-      border-radius:.3em;
-      -moz-border-radius:.3em;
-      -webkit-border-radius:.3em;
-      color: #fff;
-      display: block;
-      margin-bottom: .5em;
-      opacity: .9;
-      padding: .4em .6em;
-      text-decoration: none;
-    }
-
-    #elsewhere a:hover {
-      opacity: .6;
-    }
-    """,}
-    return dict([(k, dedent(v).strip()) for k, v in templates.items()])
+    src_files = (
+        'base.html',
+        'list.html',
+        'detail.html',
+        '_entry.html',
+        '404.html',
+        STYLESHEET,
+    )
+    templates = dict()
+    for file in src_files:
+        content = read_file(join(DIRS['templates'], file))
+        templates[file] = dedent(content).strip()
+    return templates
 
 META_REGEX = re.compile(r"/(\d{4})\.(\d\d)\.(\d\d)\.(.+)")
 
