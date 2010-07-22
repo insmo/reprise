@@ -9,6 +9,7 @@ import time
 import email
 import shutil
 import markdown
+import codecs
 
 from docutils import core
 from textwrap import dedent
@@ -46,8 +47,8 @@ DIRS = {
 
 CONTEXT = {
     'author': AUTHOR,
-    'body_title': "%s of %s" % (TITLE, AUTHOR['name']),
-    'head_title': "%s of %s" % (TITLE, AUTHOR['name']),
+    'body_title': "%s" % AUTHOR['name'],
+    'head_title': "%s" % AUTHOR['name'],
     'analytics': 'UA-1857692-3',
     'stylesheet': STYLESHEET,
 }
@@ -72,14 +73,15 @@ def _markup(content, options):
 def read_and_parse_entries(options):
     files = sorted([join(DIRS['source'], f)
                     for f in os.listdir(DIRS['source'])], reverse=True)
-    entries = []
+    entries = list()
     for file in files:
         match = META_REGEX.findall(file)
         if len(match):
             meta = match[0]
-            with open(file, 'r') as fp:
+            with codecs.open(file, 'r', 'utf-8') as fp:
                 msg = email.message_from_file(fp)
                 date = datetime(*[int(d) for d in meta[0:3]])
+                content = _markup(msg.get_payload(), options)
                 entries.append({
                     'slug': slugify(meta[3]),
                     'title': meta[3].replace('.', ' '),
@@ -87,7 +89,7 @@ def read_and_parse_entries(options):
                     'date': {'iso8601': date.isoformat(),
                              'rfc3339': rfc3339(date),
                              'display': date.strftime('%Y-%m-%d'),},
-                    'content_html': smartyPants(_markup(msg.get_payload(), options)),
+                    'content_html': smartyPants(content),
                 })
     return entries
 
@@ -149,11 +151,11 @@ def generate_atom(entries, feed_url):
                            *entry_elements), pretty_print=True)
 
 def write_file(file_name, contents):
-    with open(file_name, 'w') as fp:
-        fp.write(contents.encode("utf-8"))
+    with codecs.open(file_name, 'w', 'utf-8') as fp:
+        fp.write(contents)
 
 def read_file(file_name):
-    with open(file_name, 'r') as fp:
+    with codecs.open(file_name, 'r', 'utf-8') as fp:
         return fp.read()
 
 def slugify(str):
@@ -187,7 +189,7 @@ def get_templates():
         templates[file] = dedent(content).strip()
     return templates
 
-META_REGEX = re.compile(r"/(\d{4})\.(\d\d)\.(\d\d)\.(.+)")
+META_REGEX = re.compile(r"/(\d{4})\.(\d{1,2})\.(\d{1,2})\.(.+)")
 
 if __name__ == "__main__":
     templates = get_templates()
