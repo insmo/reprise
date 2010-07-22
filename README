@@ -1,5 +1,13 @@
 Reprise - As minimal a hAtom blog as possible
 
+Note:
+
+    Original fork from Eivind Uggedal's minimal blogging tool
+    (see http://github.com/uggedal/reprise). This verion contains
+    my personal preferences so it's probably better to check out
+    the original git file.
+
+
   1. vi entries/YYYY.MM.DD.Entry.Title.in.Camel.Case
   2. Tag your entries by making the first line read:
 
