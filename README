@@ -1,12 +1,13 @@
 Reprise - As minimal a hAtom blog as possible
 
-Note:
+### Note
 
     Original fork from Eivind Uggedal's minimal blogging tool
     (see http://github.com/uggedal/reprise). This verion contains
     my personal preferences so it's probably better to check out
     the original git file.
 
+### Usage
 
   1. vi entries/YYYY.MM.DD.Entry.Title.in.Camel.Case
   2. Tag your entries by making the first line read:
@@ -14,14 +15,20 @@ Note:
        Tags: sometag anothertag lasttag
 
      The tag preamble should be followed by a blank line.
-  3. For Ruby version:
-       gem install BlueCloth rubypants haml ratom
-     For Python version:
-       easy_install markdown smartypants Jinja2 lxml Pygments
-  4. ./reprise.rb or ./reprise.py
+  3. pip install markdown smartypants Jinja2 lxml Pygments docutils
+  4. ./reprise.py [options]
   5. Hook up public/ to a web server like nginx
-  6. Rewrite requests from /.+/ to /.+\.html/:
+    
+    Rewrite requests from /.+/ to /.+\.html/:
 
-       if (-f $request_filename.html) {
-               rewrite (.*) $1.html break;
-       }
+        server {
+            listen <your-ip>:80;
+            server_name  <domain>;
+        
+        location / {
+            root <path-to-repprise public>;
+            index index.html;
+            if (-f $request_filename.html) {
+                rewrite (.*) $1.html break;
+            }
+        }
