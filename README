@@ -17,9 +17,8 @@ Reprise - As minimal a hAtom blog as possible
      The tag preamble should be followed by a blank line.
   3. pip install markdown smartypants Jinja2 lxml Pygments docutils
   4. ./reprise.py [options]
-  5. Hook up public/ to a web server like nginx
-    
-    Rewrite requests from /.+/ to /.+\.html/:
+  5. Hook up public/ to a web server like nginx and rewrite requests
+     from /.+/ to /.+\.html/:
 
         server {
             listen <your-ip>:80;
