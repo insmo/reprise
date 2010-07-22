@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% block title %}
-  {% if active_tag %}
-    <a href="/">{{ body_title }}</a>
-  {% else %}
-    {{ body_title }}
-  {% endif %}
+    {% if active_tag %}
+        <a href="/">{{ body_title }}</a>
+    {% else %}
+        {{ body_title }}
+    {% endif %}
 {% endblock %}
 {% block content %}
-  {% for entry in entries %}
-    {% set display_content = loop.first %}
-    {% include '_entry.html' %}
-  {% endfor %}
+    {% for entry in entries %}
+        {% set display_content = loop.first %}
+        {% include '_entry.html' %}
+    {% endfor %}
 {% endblock %}

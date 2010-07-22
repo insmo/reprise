@@ -1,40 +1,39 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
-    "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
-  <head>
+<head>
+    <meta charset=utf-8>
     <title>{{ head_title }}</title>
     <link rel='stylesheet' type='text/css' href='/{{ stylesheet }}'>
-    <link rel="alternate" type="application/atom+xml"
-          title="{{ head_title }}" href="{{ feed_url }}">
-  </head>
-  <body>
+    <link rel="alternate" type="application/atom+xml" title="{{ head_title }}" href="{{ feed_url }}">
+</head>
+<body>
     <h1>{% block title %}{% endblock %}</h1>
-    
     {% block content %}
     {% endblock %}
+    
     <p id="elsewhere">
     {% for service, url in author.elsewhere.items() %}
       <a href="{{ url }}">{{ service }}</a>
     {% endfor %}
     </p>
+    
     <p id="footer">
-      <span class="author vcard">
-        <a class="url fn" href="{{ author.url }}">{{ author.name }}</a>
-        &lt;simonz05 (a) gmail.com&gt;.
-      </span>
-      <a href="http://github.com/simonz05/reprise">reprise.py</a>.
+        <span class="author vcard">
+            <a class="url fn" href="{{ author.url }}">{{ author.name }}</a>
+            &lt;simonz05 (a) gmail.com&gt;.
+        </span>
+        <a href="http://github.com/simonz05/reprise">reprise.py</a>.
     </p>
-  </body>
-  <script type='text/javascript'>
-    var gaJsHost = (("https:" == document.location.protocol) ?
-                   "https://ssl." : "http://www.");
-    document.write(unescape("%3Cscript src='" + gaJsHost +
-                            "google-analytics.com/ga.js' type='text/" +
-                            "javascript'%3E%3C/script%3E"));
-  </script>
-  <script type='text/javascript'>
-    var pageTracker = _gat._getTracker("{{ analytics }}");
-    pageTracker._initData();
-    pageTracker._trackPageview();
-  </script>
+    
+    <script type='text/javascript'>
+        var gaJsHost = (("https:" == document.location.protocol) ?
+                       "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost +
+                                "google-analytics.com/ga.js' type='text/" +
+                                "javascript'%3E%3C/script%3E"));
+        var pageTracker = _gat._getTracker("{{ analytics }}");
+        pageTracker._initData();
+        pageTracker._trackPageview();
+    </script>    
+</body>
 </html>
