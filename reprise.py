@@ -23,13 +23,13 @@ from os.path import abspath, realpath, dirname, join
 from optparse import OptionParser, make_option, OptionValueError, check_choice
 
 TITLE = 'Web'
-URL = 'http://docs.acopy.org'
+URL = 'http://simonzimmermann.com'
 STYLESHEET = 'style.css'
 
 AUTHOR = {
     'name': 'Simon Zimmermann',
     'email': 'simonz05@gmail.com',
-    'url': 'http://docs.acopy.org',
+    'url': 'http://simonzimmermann.com',
     'elsewhere': {
         'github': 'http://github.com/simonz05/',
     }
