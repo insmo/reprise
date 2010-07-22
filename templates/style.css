@@ -1,6 +1,8 @@
+@import url(http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold);
+
 body {
     color: #444;
-    font: normal normal normal 62.5%/1.6em sans-serif;
+    font: normal normal normal 100%/1.6em sans-serif;
     padding: 0 3em 0 13em;
     width: 768px;
 }
@@ -16,13 +18,16 @@ a:hover {
 }
 
 p {
-    font-size: 1.5em;
-    line-height: 1.3em;
+    line-height: 1.4em;
     margin-bottom: 1em;
 }
 
 ul, ol {
     padding: 0;
+}
+
+li {
+    margin: 0.5em 0 0 2.5em;
 }
 
 blockquote {
@@ -46,8 +51,12 @@ pre {
     padding: 1em 1em 1em 2em;
 }
 
+h1, h2, h3, h4, abbr.updated {
+    font-family: "Nobile", serif;    
+    font-weight: normal;
+}
+
 h1 {
-    font-size: 4.2em;
     line-height: 40px;
     margin: 1.5em 0 1em 0;
 }
@@ -65,21 +74,8 @@ h1 span.subtitle {
     padding: 0 0 0 0.4em;
 }
 
-h2 {
-    font-size: 3em;
-}
-
 h2, h2 a {
     color: #738244;
-}
-
-h3 {
-    font-size: 2.2em;
-}
-
-h1, h2, h3, abbr.updated {
-    font-family: "athelas-1","athelas-2", serif;    
-    font-weight: normal;
 }
 
 h3 {
@@ -126,33 +122,33 @@ abbr.updated, ul.tags {
 abbr.updated {
     border: 0;
     color: #ccc;
-    font-size: 1.9em;
     margin: 0 0 0 -6.25em;
 }
 
 ul.tags {
+    width: 12em;
+    text-align: right;
     list-style-type: none;
-    margin: 1em 0 0 -10em;
+    margin: 0 0 0 -12em;
 }
 
 ul.tags li {
     display: block;
-    font-size: 1.4em;
-    margin-bottom: .3em;
+    padding: 0 1.2em .3em 0;
 }
 
 ul.tags li a, .entry-content a {
-    color: #fff;
-    background: #AFBAC5;
+    color: #212121;
+    background: #D9DBDD;
 }
 
 ul.tags a:hover, .entry-content a:hover {
+    color: #fff;
     background: #ff4005;
 }
 
 p#footer {
     color: #bbb;
-    font-size: 1.2em;
     margin-top: 3em;
     text-align: center;
     text-indent: 0;

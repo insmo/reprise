@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!../ve/bin/python
 
 from __future__ import with_statement
 
