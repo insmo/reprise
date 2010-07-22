@@ -22,17 +22,16 @@ from pygments.formatters import HtmlFormatter
 from os.path import abspath, realpath, dirname, join
 from optparse import OptionParser, make_option, OptionValueError, check_choice
 
-TITLE = 'Journal'
-URL = 'http://journal.uggedal.com'
+TITLE = 'Web'
+URL = 'http://docs.acopy.org'
 STYLESHEET = 'style.css'
 
 AUTHOR = {
-    'name': 'Eivind Uggedal',
-    'email': 'eivind@uggedal.com',
-    'url': 'http://uggedal.com',
+    'name': 'Simon Zimmermann',
+    'email': 'simonz05@gmail.com',
+    'url': 'http://docs.acopy.org',
     'elsewhere': {
-        '@uggedal': 'http://twitter.com/uggedal/',
-        'Was it up?': 'http://wasitup.com/',
+        'github': 'http://github.com/simonz05/',
     }
 }
 
