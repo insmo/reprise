@@ -48,7 +48,7 @@ CONTEXT = {
     'author': AUTHOR,
     'body_title': "%s" % AUTHOR['name'],
     'head_title': "%s" % AUTHOR['name'],
-    'analytics': 'UA-1857692-3',
+    'analytics': 'UA-10660822-1',
     'stylesheet': STYLESHEET,
 }
 
@@ -62,7 +62,14 @@ def handle_args():
     ]
     parser = OptionParser(option_list=option_list, usage=usage)
     return parser.parse_args()
+
+def _rm(dir):
+    try:
+        shutil.rmtree(dir)
+    except OSError:
+        pass
     
+
 def _markup(content, options):
     if options.markup.lower() == 'rest':
         parts = core.publish_parts(source=content, writer_name='html')
@@ -191,6 +198,7 @@ def get_templates():
 META_REGEX = re.compile(r"/(\d{4})\.(\d{1,2})\.(\d{1,2})\.(.+)")
 
 if __name__ == "__main__":
+    _rm(DIRS['build'])    
     templates = get_templates()
     env = Environment(loader=DictLoader(templates))
     options, args = handle_args()
@@ -202,5 +210,6 @@ if __name__ == "__main__":
     generate_details(all_entries, env.get_template('detail.html'))
     generate_404(env.get_template('404.html'))
     generate_style(templates[STYLESHEET])
-    shutil.rmtree(DIRS['public'])
+    _rm(DIRS['public'])
     shutil.move(DIRS['build'], DIRS['public'])
+    _rm(DIRS['build'])

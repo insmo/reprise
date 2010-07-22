@@ -8,10 +8,8 @@
           title="{{ head_title }}" href="{{ feed_url }}">
   </head>
   <body>
-    <h1>
-      {% block title %}
-      {% endblock %}
-    </h1>
+    <h1>{% block title %}{% endblock %}</h1>
+    
     {% block content %}
     {% endblock %}
     <p id="elsewhere">

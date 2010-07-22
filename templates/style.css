@@ -3,7 +3,8 @@
 body {
     color: #444;
     font: normal normal normal 100%/1.6em sans-serif;
-    padding: 0 3em 0 13em;
+    
+    margin: 0 auto;
     width: 768px;
 }
 
@@ -72,6 +73,10 @@ h1 a:hover, h2 a:hover {
 h1 span.subtitle {
     color: #ccc;
     padding: 0 0 0 0.4em;
+}
+
+h2 {
+    font-size: 0.94em;
 }
 
 h2, h2 a {
