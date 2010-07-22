@@ -134,7 +134,8 @@ ul.tags {
 
 ul.tags li {
     display: block;
-    padding: 0 1.2em .3em 0;
+    padding: 0 1.2em 0 0;
+    margin: 0;
 }
 
 ul.tags li a, .entry-content a {
