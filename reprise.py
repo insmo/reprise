@@ -77,8 +77,7 @@ def _markup(content, options):
     return markdown.markdown(content, ['codehilite', 'def_list'])
 
 def read_and_parse_entries(options):
-    files = sorted([join(DIRS['source'], f)
-                    for f in os.listdir(DIRS['source'])], reverse=True)
+    files =[join(DIRS['source'], f) for f in os.listdir(DIRS['source'])]
     entries = list()
     for file in files:
         match = META_REGEX.findall(file)
@@ -97,6 +96,7 @@ def read_and_parse_entries(options):
                              'display': date.strftime('%Y-%m-%d'),},
                     'content_html': smartyPants(content),
                 })
+    entries.sort(key=lambda x: x['date']['iso8601'], reverse=True)
     return entries
 
 def generate_index(entries, template):
