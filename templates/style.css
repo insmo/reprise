@@ -1,21 +1,9 @@
-@import url(http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold);
+/*@import url(http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold);*/
 
 body {
     color: #444;
-    font: normal normal normal 100%/1.6em sans-serif;
-    
-    margin: 0 auto;
-    width: 768px;
-}
-
-a {
-    color: #666;
-    text-decoration: none;
-}
-
-a:hover {
-    color: #fff;
-    background: #ff4005;
+    margin: 0 8em;
+    width: 600px;
 }
 
 p {
@@ -41,8 +29,7 @@ blockquote em {
 }
 
 pre, code {
-    font-family: 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono',
-                 Consolas, Monaco, 'Lucida Console', monospaced;
+    font-family: monospaced;
 }
 
 pre {
@@ -53,21 +40,23 @@ pre {
 }
 
 h1, h2, h3, h4, abbr.updated {
-    font-family: "Nobile", serif;    
+    font-family: sans-serif;    
     font-weight: normal;
 }
 
 h1 {
-    line-height: 40px;
+    background: transparent url('/images/simon_thumb.jpg') no-repeat;
+    line-height: 50px;
     margin: 1.5em 0 1em 0;
+    padding-left: 60px;
 }
 
-h1, h1 a {
-    color: #333;
+h1, h1 a, h2, h2 a {
+    text-decoration: none;
 }
 
 h1 a:hover, h2 a:hover {
-    color: #fff;
+    text-decoration: underline;
 }
 
 h1 span.subtitle {
@@ -77,10 +66,6 @@ h1 span.subtitle {
 
 h2 {
     font-size: 0.94em;
-}
-
-h2, h2 a {
-    color: #738244;
 }
 
 h3 {
@@ -143,14 +128,14 @@ ul.tags li {
     margin: 0;
 }
 
-ul.tags li a, .entry-content a {
-    color: #212121;
+ul.tags li a {
     background: #D9DBDD;
+    text-decoration:none;
 }
 
-ul.tags a:hover, .entry-content a:hover {
-    color: #fff;
-    background: #ff4005;
+ul.tags a:hover {
+    background: #999;
+    text-decoration:none;
 }
 
 p#footer {
@@ -160,37 +145,23 @@ p#footer {
     text-indent: 0;
 }
 
-p#footer a {
-    color: #999;
-    background: #fff;
-}
-
-p#footer a:hover {
-    color: #fff;
-    background: #ff4005;
-}
-
 #elsewhere {
-    margin: 1.3em;
+    background: #f0f0f0;
     position: absolute;
-    right: 1em;
-    top: .5em;
+    left: 0em;
+    top: -1em;
     z-index: 9000;
 }
 
+#elsewhere li {
+    list-style: none;
+}
+
 #elsewhere a {
-    background: #c00;
-    border-radius:.3em;
-    -moz-border-radius:.3em;
-    -webkit-border-radius:.3em;
-    color: #fff;
+    position: inline;
     display: block;
     margin-bottom: .5em;
-    opacity: .9;
     padding: .4em .6em;
     text-decoration: none;
 }
 
-#elsewhere a:hover {
-    opacity: .6;
-}

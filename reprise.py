@@ -32,6 +32,7 @@ AUTHOR = {
     'url': 'http://simonzimmermann.com',
     'elsewhere': {
         'github': 'http://github.com/simonz05/',
+        'robotics': 'http://letsmakerobots.com/user/4383',
     }
 }
 
@@ -68,7 +69,6 @@ def _rm(dir):
         shutil.rmtree(dir)
     except OSError:
         pass
-    
 
 def _markup(content, options):
     if options.markup.lower() == 'rest':
@@ -198,7 +198,7 @@ def get_templates():
 META_REGEX = re.compile(r"/(\d{4})\.(\d{1,2})\.(\d{1,2})\.(.+)")
 
 if __name__ == "__main__":
-    _rm(DIRS['build'])    
+    _rm(DIRS['build'])
     templates = get_templates()
     env = Environment(loader=DictLoader(templates))
     options, args = handle_args()
